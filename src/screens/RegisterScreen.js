@@ -24,34 +24,35 @@ Please check your email and verify your account before logging in.
 
 export default function RegisterScreen({ navigation }) {
 
-  const [isOpen, setIsOpen] = useState(false);
-  const app_name = "eventree-calendar";
-  function buildPath(route) {
-      if (process.env.NODE_ENV === "production") {
-          return "https://" + app_name + ".herokuapp.com/" + route;
-      } else {
-          return "http://localhost:5000/" + route;
-      }
-  }
-
   const [firstName, setFirstName] = useState({ value: '', error: '' })
   const [lastName, setLastName] = useState({ value: '', error: '' })
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
-  const [repeat_password, set_confirm_password] = useState({ value: '', error: '' })
+  const [repeatPassword, set_confirm_password] = useState({ value: '', error: '' })
+
+  const FirstNameError = FirstNameValidator(firstName.value)
+  const LastNameError = LastNameValidator(lastName.value)
+  const emailError = emailValidator(email.value)
+  const passwordError = passwordValidator(password.value)
+  const confirm_passwordError = ConfirmPasswordValidator(repeatPassword.value, password.value)
+
+  const app_name = "eventree-calendar-test";
+  function buildPath(route) {
+      if (process.env.NODE_ENV === "production") {
+          return "https://" + app_name + ".herokuapp.com/" + route;
+      } else {
+          return "https://" + app_name + ".herokuapp.com/" + route;
+      }
+  }
 
   const onSignUpPressed = async (event) => {
-    const FirstNameError = FirstNameValidator(firstName.value)
-    const LastNameError = LastNameValidator(lastName.value)
-    const emailError = emailValidator(email.value)
-    const passwordError = passwordValidator(password.value)
-    const confirm_passwordError = ConfirmPasswordValidator(repeat_password.value, password.value)
+    event.preventDefault();
     if (FirstNameError || LastNameError || emailError|| passwordError || confirm_passwordError) {
       setFirstName({ ...firstName, error: FirstNameError })
       setLastName({ ...lastName, error: LastNameError })
       setEmail({ ...email, error: emailError })
       setPassword({ ...password, error: passwordError })
-      set_confirm_password({ ...repeat_password, password, error: confirm_passwordError })
+      set_confirm_password({ ...repeatPassword, password, error: confirm_passwordError })
       return
     }
     navigation.reset({
@@ -59,7 +60,7 @@ export default function RegisterScreen({ navigation }) {
       routes: [{ name: 'Dashboard' }],
     })
     
-    var obj = { firstName: firstName.value, lastName: lastName.value, email: email.value, password: password.value, repeat_password: repeat_password.value };
+    var obj = { firstName: firstName.value, lastName: lastName.value, email: email.value, password: password.value, repeat_password: repeatPassword.value };
     var js = JSON.stringify(obj);
     try {
         const response = await fetch(buildPath('api/user/register'), {
@@ -80,7 +81,7 @@ export default function RegisterScreen({ navigation }) {
             if (email.value === user.email)
             {
                 setIsOpen(false);
-                // document.getElementById("signUpSuccess").innerHTML = success;
+                document.getElementById("signUpSuccess").innerHTML = success;
             }
             console.log(res);
             
@@ -91,6 +92,8 @@ export default function RegisterScreen({ navigation }) {
         return;
     }
   }
+
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Background>
@@ -137,19 +140,20 @@ export default function RegisterScreen({ navigation }) {
       <TextInput
         label="Confirm password"
         returnKeyType="done"
-        value={repeat_password.value}
+        value={repeatPassword.value}
         onChangeText={(text) => set_confirm_password({ value: text, error: '' })}
-        error={!!repeat_password.error}
-        errorText={repeat_password.error}
+        error={!!repeatPassword.error}
+        errorText={repeatPassword.error}
         secureTextEntry
       />
       <Button
         mode="contained"
         onPress={onSignUpPressed}
         style={{ marginTop: 24 }}
+        onPress={() => navigation.replace('StartScreen')}
       >
         Sign Up
-      </Button>
+      </Button >
       <View style={styles.row}>
         <Text>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>

@@ -9,7 +9,7 @@ import { emailValidator } from '../helpers/emailValidator'
 
 function ResetPasswordScreen({ navigation }) {
 
-const app_name = "eventree-calendar";
+const app_name = "eventree-calendar-test";
   function buildPath(route) {
       if (process.env.NODE_ENV === "production") {
           return "https://" + app_name + ".herokuapp.com/" + route;
@@ -52,7 +52,7 @@ const app_name = "eventree-calendar";
         const response = await fetch(buildPath('api/user/password-reset/get-code'), {
             method: "POST",
             body: js,
-            headers: { "Content-Type": "application/json" },
+            credentials : "include"
         });
 
         var res = JSON.parse(await response.text());

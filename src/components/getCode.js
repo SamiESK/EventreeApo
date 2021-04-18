@@ -6,7 +6,7 @@ function getCode()
 {
     var email;
 
-    const app_name = "eventree-calendar";
+    const app_name = "eventree-calendar-test";
     function buildPath(route) {
         if (process.env.NODE_ENV === "production") {
             return "https://" + app_name + ".herokuapp.com/" + route;
@@ -18,11 +18,11 @@ function getCode()
     const resetCode = async (event) => {
 
         event.preventDefault();
-        if (email.value === null)
-        {
-            document.getElementById("loginError").innerHTML = "Please put your email in"
-            return;
-        }
+        // if (email.value === null)
+        // {
+        //     document.getElementById("loginError").innerHTML = "Please put your email in"
+        //     return;
+        // }
         var obj = { email: email.value};
         
         var js = JSON.stringify(obj);
@@ -30,15 +30,15 @@ function getCode()
             const response = await fetch(buildPath('api/user/password-reset/get-code'), {
                 method: "POST",
                 body: js,
-                headers: { "Content-Type": "application/json" },
+                credentials : "include"
             });
 
             var res = JSON.parse(await response.text());
             if (!res.success) {
-                document.getElementById("getCodeError").innerHTML = res.errors.pop().msg;
+                // document.getElementById("getCodeError").innerHTML = res.errors.pop().msg;
             }
             else if(res.success) {
-                document.getElementById("getCodeError").innerHTML = "";
+                // document.getElementById("getCodeError").innerHTML = "";
             }
             
         } catch (e) {

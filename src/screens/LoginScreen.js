@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { TouchableOpacity, StyleSheet, View} from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
@@ -16,12 +16,13 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState({ value: '', error: '' })
   const [isOpen, setIsOpen] = useState(false);
 
-  const app_name = "eventree-calendar";
-  function buildPath(route) {
+  const app_name = "eventree-calendar-test";
+  function buildPath(route) 
+  {
       if (process.env.NODE_ENV === "production") {
           return "https://" + app_name + ".herokuapp.com/" + route;
       } else {
-          return "http://localhost:5000/" + route;
+          return "https://" + app_name + ".herokuapp.com/" + route;
       }
   }
 
@@ -41,6 +42,7 @@ export default function LoginScreen({ navigation }) {
     event.preventDefault();
     var obj = { email: email.value, password: password.value };
     var js = JSON.stringify(obj);
+    console.log(obj)
    
     try {
         const response = await fetch(buildPath('api/user/login'), {
@@ -52,7 +54,7 @@ export default function LoginScreen({ navigation }) {
         var res = JSON.parse(await response.text());
         console.log(res);
         if (!res.token) {
-          alert(res.error);
+          // alert(res.error);
             // document.getElementById("loginError").innerHTML = res.error;
         }
         else if(res.token) {
